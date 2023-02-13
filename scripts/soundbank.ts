@@ -4,7 +4,7 @@ import * as path from "path";
 
 // "https://developer.amazon.com/en-US/docs/alexa/custom-skills/ask-soundlibrary.html";
 // "https://d3qhmae9zx9eb.cloudfront.net/";// xml truncated
-    /*
+/*
     <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
         <Name>alexa-soundlibrary</Name>
         <Prefix/>
@@ -27,93 +27,88 @@ import * as path from "path";
 /*
     from script tag in webPage
 */
-const soundLibraryJson = "https://m.media-amazon.com/images/G/01/mobile-apps/dex/ask-tech-docs/ask-soundlibrary._TTH_.json"
-async function loadJson(){
-    const {data} = await axios.default(soundLibraryJson);
-    return data;
+const soundLibraryJson =
+  "https://m.media-amazon.com/images/G/01/mobile-apps/dex/ask-tech-docs/ask-soundlibrary._TTH_.json";
+async function loadJson() {
+  const { data } = await axios.default(soundLibraryJson);
+  return data;
 }
 
 interface Sound {
-    audioFilePath: string,
-    category: string,
-    duration: number,
-    name: string,
-    tags: unknown[]
+  audioFilePath: string;
+  category: string;
+  duration: number;
+  name: string;
+  tags: unknown[];
 }
 
 interface SoundDetail {
-    path:string,
-    duration:number
+  path: string;
+  duration: number;
 }
 
 /*
     Dot notation must be a valid JavaScript identifier which can also be a reserved word.
     See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#identifiers
 */
-const names:string[] = [];
-function getSoundPropertyName(name:string){
-    name = name.toLowerCase();
-    name = name.replace(/[\(\) ]/g,"_");
-    name = name.replace(/__/g,"_");
-    if(name.endsWith("_")){
-        name = name.substring(0,name.length -1 );
-    }
-    names.push(name);
-    return name;
+const names: string[] = [];
+function getSoundPropertyName(name: string) {
+  name = name.toLowerCase();
+  name = name.replace(/[\(\) ]/g, "_");
+  name = name.replace(/__/g, "_");
+  if (name.endsWith("_")) {
+    name = name.substring(0, name.length - 1);
+  }
+  names.push(name);
+  return name;
 }
 
 const charsSet = new Set<string>();
-function checkPropertyNames(){
-    names.forEach(name => {
-        for(let i = 0;i<name.length;i++){
-            charsSet.add(name[i]);
-        }
-    })
-    Array.from(charsSet.values()).forEach(char => {
-        console.log(char);
-    })
+function checkPropertyNames() {
+  names.forEach((name) => {
+    for (let i = 0; i < name.length; i++) {
+      charsSet.add(name[i]);
+    }
+  });
+  Array.from(charsSet.values()).forEach((char) => {
+    console.log(char);
+  });
 }
 
 // could read from json - baseUrl.soundBankUrl
 const soundbankUrl = "soundbank://soundlibrary/";
 
-function createSoundbank(sounds:Sound[]){
-    const soundbank = {} as any;
-    sounds.forEach(sound => {
-        const categoryNames = sound.category.split("/");
-        let category = soundbank;
-        categoryNames.forEach(categoryName => {
-            categoryName = categoryName.toLowerCase();
-            if(category[categoryName] === undefined){
-                category[categoryName] = {};
-            }
-            category = category[categoryName];
-        });
-        category[getSoundPropertyName(sound.name)] = {
-            duration:sound.duration,
-            soundbankUrl:`${soundbankUrl}${sound.audioFilePath}`
-        }
+function createSoundbank(sounds: Sound[]) {
+  const soundbank = {} as any;
+  sounds.forEach((sound) => {
+    const categoryNames = sound.category.split("/");
+    let category = soundbank;
+    categoryNames.forEach((categoryName) => {
+      categoryName = categoryName.toLowerCase();
+      if (category[categoryName] === undefined) {
+        category[categoryName] = {};
+      }
+      category = category[categoryName];
     });
-    return soundbank;
+    category[getSoundPropertyName(sound.name)] = {
+      duration: sound.duration,
+      soundbankUrl: `${soundbankUrl}${sound.audioFilePath}`,
+    };
+  });
+  return soundbank;
 }
 
-function saveSoundBank(filePath:string,soundbank:any){
-    const code = `export const soundbank = 
-        ${JSON.stringify(soundbank,null,2)}
+function saveSoundBank(filePath: string, soundbank: any) {
+  const code = `export const soundbank = 
+        ${JSON.stringify(soundbank, null, 2)}
     `;
-    fs.writeFileSync(filePath,code);
+  fs.writeFileSync(filePath, code);
 }
 
 (async () => {
-    const json = await loadJson();
-    const soundbank = createSoundbank(json.sounds);
-    //checkPropertyNames();
-    const soundBankPath = path.join(__dirname,"..","src","soundbank.ts");
-    saveSoundBank(soundBankPath,soundbank);
+  const json = await loadJson();
+  const soundbank = createSoundbank(json.sounds);
+  //checkPropertyNames();
+  const soundBankPath = path.join(__dirname, "..", "src", "soundbank.ts");
+  saveSoundBank(soundBankPath, soundbank);
 })();
-
-
-
-
-
-

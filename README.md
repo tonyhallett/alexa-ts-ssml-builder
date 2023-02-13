@@ -79,70 +79,267 @@ Note that prosody has multiple methods to distinguish pitch which has restrictio
 
 ```
 export interface SSMLBuilder<
-    TSkillLocale extends LangLocale,
-    TVoice extends VoiceNamesOrDefault = Default,
-    TLang extends LangOrDefault = Default,
-    TReturn = {}
-> 
-{
-    text(text:string):TReturn
+  TSkillLocale extends LangLocale,
+  TVoice extends VoiceNamesOrDefault = Default,
+  TLang extends LangOrDefault = Default,
+  TRestrictions extends Restrictions = Default,
+  TReturn = {}
+> {
+  text(text: string): TReturn;
 
-    voice<TNewVoice extends AllVoiceNames>(name:TNewVoice,textOrCallback:TextOrBuilderCallback<VoiceBuilderMethods,TSkillLocale,TNewVoice,TLang>):TReturn
-    voiceFromSkillLocale<TNewVoice extends VoicesInLocale<TSkillLocale>>(name:TNewVoice,textOrCallback:TextOrBuilderCallback<VoiceBuilderMethods,TSkillLocale,TNewVoice,TLang>):TReturn
-    lang<TNewLang extends LangLocale>(locale:TNewLang,textOrCallback:TextOrBuilderCallback<LangBuilderMethods,TSkillLocale,TVoice,TNewLang>) : TReturn
+  voice<TNewVoice extends AllVoiceNames>(
+    name: TNewVoice,
+    textOrCallback: TextOrBuilderCallback<
+      VoiceBuilderMethods,
+      TSkillLocale,
+      TNewVoice,
+      TLang,
+      AddRestriction<TRestrictions, "voice">
+    >
+  ): TReturn;
+  voiceFromSkillLocale<TNewVoice extends VoicesInLocale<TSkillLocale>>(
+    name: TNewVoice,
+    textOrCallback: TextOrBuilderCallback<
+      VoiceBuilderMethods,
+      TSkillLocale,
+      TNewVoice,
+      TLang,
+      AddRestriction<TRestrictions, "voice">
+    >
+  ): TReturn;
+  lang<TNewLang extends LangLocale>(
+    locale: TNewLang,
+    textOrCallback: TextOrBuilderCallback<
+      LangBuilderMethods,
+      TSkillLocale,
+      TVoice,
+      TNewLang,
+      TRestrictions
+    >
+  ): TReturn;
 
-    fun(textOrCallback:TextOrBuilderCallback<FunBuilderMethods,TSkillLocale,TVoice,TLang>) : TReturn 
-    conversational(textOrCallback:TextOrBuilderCallback<ConversationalBuilderMethods,TSkillLocale,TVoice,TLang>) : TReturn
-    longForm(textOrCallback:TextOrBuilderCallback<LongFormBuilderMethods,TSkillLocale,TVoice,TLang>) : TReturn
-    music(textOrCallback:TextOrBuilderCallback<MusicBuilderMethods,TSkillLocale,TVoice,TLang>) : TReturn
-    news(textOrCallback:TextOrBuilderCallback<NewsBuilderMethods,TSkillLocale,TVoice,TLang>) : TReturn
-    emotion(name:Emotion,intensity:EmotionIntensity,textOrCallback:TextOrBuilderCallback<EmotionBuilderMethods,TSkillLocale,TVoice,TLang>) : TReturn
-    whisper(textOrCallback:TextOrBuilderCallback<WhisperBuilderMethods,TSkillLocale,TVoice,TLang>) : TReturn
+  fun(
+    textOrCallback: TextOrBuilderCallback<
+      FunBuilderMethods,
+      TSkillLocale,
+      TVoice,
+      TLang,
+      AddRestriction<TRestrictions, "domain">
+    >
+  ): TReturn;
+  conversational(
+    textOrCallback: TextOrBuilderCallback<
+      ConversationalBuilderMethods,
+      TSkillLocale,
+      TVoice,
+      TLang,
+      AddRestriction<TRestrictions, "domain">
+    >
+  ): TReturn;
+  longForm(
+    textOrCallback: TextOrBuilderCallback<
+      LongFormBuilderMethods,
+      TSkillLocale,
+      TVoice,
+      TLang,
+      AddRestriction<TRestrictions, "domain">
+    >
+  ): TReturn;
+  music(
+    textOrCallback: TextOrBuilderCallback<
+      MusicBuilderMethods,
+      TSkillLocale,
+      TVoice,
+      TLang,
+      AddRestriction<TRestrictions, "domain">
+    >
+  ): TReturn;
+  news(
+    textOrCallback: TextOrBuilderCallback<
+      NewsBuilderMethods,
+      TSkillLocale,
+      TVoice,
+      TLang,
+      AddRestriction<TRestrictions, "domain">
+    >
+  ): TReturn;
+  emotion(
+    name: Emotion,
+    intensity: EmotionIntensity,
+    textOrCallback: TextOrBuilderCallback<
+      EmotionBuilderMethods,
+      TSkillLocale,
+      TVoice,
+      TLang,
+      AddRestriction<TRestrictions, "emotion">
+    >
+  ): TReturn;
+  whisper(
+    textOrCallback: TextOrBuilderCallback<
+      WhisperBuilderMethods,
+      TSkillLocale,
+      TVoice,
+      TLang,
+      TRestrictions
+    >
+  ): TReturn;
 
-    break(strength?:BreakStrength,milliseconds?:number):TReturn
-    paragraph(textOrCallback:TextOrBuilderCallback<ParagraphBuilderMethods,TSkillLocale,TVoice,TLang>) : TReturn
-    sentence(textOrCallback:TextOrBuilderCallback<SentenceBuilderMethods,TSkillLocale,TVoice,TLang>) : TReturn
-    
-    word(role:WordRole,textOrCallback:TextOrBuilderCallback<WordBuilderMethods,TSkillLocale,TVoice,TLang>) : TReturn
-    
-    sub(alias:string,aliased:string) : TReturn
+  break(strength?: BreakStrength, milliseconds?: number): TReturn;
+  paragraph(
+    textOrCallback: TextOrBuilderCallback<
+      ParagraphBuilderMethods,
+      TSkillLocale,
+      TVoice,
+      TLang,
+      TRestrictions
+    >
+  ): TReturn;
+  sentence(
+    textOrCallback: TextOrBuilderCallback<
+      SentenceBuilderMethods,
+      TSkillLocale,
+      TVoice,
+      TLang,
+      TRestrictions
+    >
+  ): TReturn;
 
-    audio(src:string):TReturn;
-    audioSoundbank(soundBankSound:SoundbankSound) : TReturn
+  word(
+    role: WordRole,
+    textOrCallback: TextOrBuilderCallback<
+      WordBuilderMethods,
+      TSkillLocale,
+      TVoice,
+      TLang,
+      TRestrictions
+    >
+  ): TReturn;
 
-    emphasis(level:EmphasisLevel,textOrCallback:TextOrBuilderCallback<EmphasisBuilderMethods,TSkillLocale,TVoice,TLang>):TReturn;
-    emphasisDefault(textOrCallback:TextOrBuilderCallback<EmphasisBuilderMethods,TSkillLocale,TVoice,TLang>):TReturn;
+  sub(alias: string, aliased: string): TReturn;
 
-    prosodyRate(rate:ProsodyRate,textOrCallback:TextOrBuilderCallback<ProsodySafeBuilderMethods,TSkillLocale,TVoice,TLang>):TReturn
-    prosodyVolume(volume:ProsodyVolume,textOrCallback:TextOrBuilderCallback<ProsodySafeBuilderMethods,TSkillLocale,TVoice,TLang>):TReturn
-    prosodyRateVolume(rate:ProsodyRate,volume:ProsodyVolume,textOrCallback:TextOrBuilderCallback<ProsodySafeBuilderMethods,TSkillLocale,TVoice,TLang>):TReturn
-    prosodyPitch(pitch:ProsodyPitch,textOrCallback:TextOrBuilderCallback<ProsodyPitchBuilderMethods,TSkillLocale,TVoice,TLang>):TReturn
-    prosodyPitchAndRate(pitch:ProsodyPitch,rate:ProsodyRate,textOrCallback:TextOrBuilderCallback<ProsodyPitchBuilderMethods,TSkillLocale,TVoice,TLang>):TReturn
-    prosodyPitchRateVolume(pitch:ProsodyPitch,rate:ProsodyRate,volume:ProsodyVolume,textOrCallback:TextOrBuilderCallback<ProsodyPitchBuilderMethods,TSkillLocale,TVoice,TLang>):TReturn
+  audio(src: string): TReturn;
+  audioSoundbank(soundBankSound: SoundbankSound): TReturn;
 
-    phonemeIPA(phonetic:string,text?:string):TReturn
-    phonemeXSampa(phonetic:string,text?:string):TReturn
-    phonemeAnyLanguageIPA(...phonemes:IpaPhonemes[]):TReturn
-    phonemeAnyLanguageXSampa(...phonemes:XSampaPhonemes[]):TReturn
-    phonemeLanguageIPA(...phonemes:IpaLangPhoneme<TSkillLocale,TVoice,TLang>[]):TReturn
-    phonemeLanguageXSampa(...phonemes:XSampaLangPhoneme<TSkillLocale,TVoice,TLang>[]):TReturn
-    
-    sayAsExpletive(text:string):TReturn
-    sayAsAddress(text:string):TReturn
-    sayAsTelephone(text:string):TReturn
-    sayAsTime(text:string):TReturn
-    sayAsUnit(text:string):TReturn
-    sayAsFraction(text:string):TReturn
-    sayAsDigits(text:string):TReturn
-    sayAsOrdinal(text:string):TReturn
-    sayAsCardinal(text:string):TReturn
-    sayAsCharacters(text:string):TReturn
+  emphasis(
+    level: EmphasisLevel,
+    textOrCallback: TextOrBuilderCallback<
+      EmphasisBuilderMethods,
+      TSkillLocale,
+      TVoice,
+      TLang,
+      AddRestriction<TRestrictions, "emphasis">
+    >
+  ): TReturn;
+  emphasisDefault(
+    textOrCallback: TextOrBuilderCallback<
+      EmphasisBuilderMethods,
+      TSkillLocale,
+      TVoice,
+      TLang,
+      AddRestriction<TRestrictions, "emphasis">
+    >
+  ): TReturn;
 
-    sayAsDate(text:string,format:SayAsDateFormat):TReturn
+  // percentage minimum is 20%
+  prosodyRate(
+    rate: ProsodyRate,
+    textOrCallback: TextOrBuilderCallback<
+      ProsodySafeBuilderMethods,
+      TSkillLocale,
+      TVoice,
+      TLang,
+      TRestrictions
+    >
+  ): TReturn;
+  // db - The maximum positive value is about +4.08dB.
+  prosodyVolume(
+    volume: ProsodyVolume,
+    textOrCallback: TextOrBuilderCallback<
+      ProsodySafeBuilderMethods,
+      TSkillLocale,
+      TVoice,
+      TLang,
+      TRestrictions
+    >
+  ): TReturn;
+  prosodyRateVolume(
+    rate: ProsodyRate,
+    volume: ProsodyVolume,
+    textOrCallback: TextOrBuilderCallback<
+      ProsodySafeBuilderMethods,
+      TSkillLocale,
+      TVoice,
+      TLang,
+      TRestrictions
+    >
+  ): TReturn;
+  // max +50%, smallest -33.3 ( no exception just capped)
+  prosodyPitch(
+    pitch: ProsodyPitch,
+    textOrCallback: TextOrBuilderCallback<
+      ProsodyPitchBuilderMethods,
+      TSkillLocale,
+      TVoice,
+      TLang,
+      AddRestriction<TRestrictions, "prosodyPitch">
+    >
+  ): TReturn;
+  prosodyPitchAndRate(
+    pitch: ProsodyPitch,
+    rate: ProsodyRate,
+    textOrCallback: TextOrBuilderCallback<
+      ProsodyPitchBuilderMethods,
+      TSkillLocale,
+      TVoice,
+      TLang,
+      AddRestriction<TRestrictions, "prosodyPitch">
+    >
+  ): TReturn;
+  prosodyPitchRateVolume(
+    pitch: ProsodyPitch,
+    rate: ProsodyRate,
+    volume: ProsodyVolume,
+    textOrCallback: TextOrBuilderCallback<
+      ProsodyPitchBuilderMethods,
+      TSkillLocale,
+      TVoice,
+      TLang,
+      AddRestriction<TRestrictions, "prosodyPitch">
+    >
+  ): TReturn;
 
-    sayAsInterjection<TSpeechcon extends LanguageSpeechcon<TSkillLocale,TVoice,TLang>>(speechcon:TSpeechcon,suffix?:string):TReturn
+  phonemeIPA(phonetic: string, text?: string): TReturn;
+  phonemeXSampa(phonetic: string, text?: string): TReturn;
+  phonemeAnyLanguageIPA(...phonemes: IpaPhonemes[]): TReturn;
+  phonemeAnyLanguageXSampa(...phonemes: XSampaPhonemes[]): TReturn;
+  phonemeLanguageIPA(
+    ...phonemes: IpaLangPhoneme<TSkillLocale, TVoice, TLang>[]
+  ): TReturn;
+  phonemeLanguageXSampa(
+    ...phonemes: XSampaLangPhoneme<TSkillLocale, TVoice, TLang>[]
+  ): TReturn;
+
+  sayAsExpletive(text: string): TReturn;
+  sayAsAddress(text: string): TReturn;
+  sayAsTelephone(text: string): TReturn;
+  sayAsTime(text: string): TReturn;
+  sayAsUnit(text: string): TReturn;
+  sayAsFraction(text: string): TReturn;
+  sayAsDigits(text: string): TReturn;
+  sayAsOrdinal(text: string): TReturn;
+  sayAsCardinal(text: string): TReturn;
+  sayAsCharacters(text: string): TReturn;
+
+  sayAsDate(text: string, format: SayAsDateFormat): TReturn;
+
+  sayAsInterjection<
+    TSpeechcon extends LanguageSpeechcon<TSkillLocale, TVoice, TLang>
+  >(
+    speechcon: TSpeechcon,
+    suffix?: string
+  ): TReturn;
 }
-export type AllBuilderMethods = keyof SSMLBuilder<"en-GB">
+export type AllBuilderMethods = keyof SSMLBuilder<"en-GB">;
 
 ```
 
