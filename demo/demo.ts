@@ -28,7 +28,7 @@ jaJpBuilder.paragraph(subBuilderLevel1 => {
     subBuilderLevel1.build
     subBuilderLevel1.sentence(subBuilderLevel2 => {
         // @ts-expect-error - build should only be available after added content on the main builder
-        subBuilderLevel1.build
+        subBuilderLevel2.build
     })
 }
 ).build();
@@ -40,7 +40,6 @@ jaJpBuilder.paragraph(subBuilderLevel1 => {
 jaJpBuilder.sayAsInterjection("codswallop");
 enGBBuilder.sayAsInterjection("codswallop");
 jaJpBuilder.lang("en-GB",builder => builder.sayAsInterjection("codswallop")); // lang over skill locale
-jaJpBuilder.voice("Amy",builder => builder.sayAsInterjection("codswallop")); // voice over skill locale
 jaJpBuilder.voiceFromSkillLocale("Mizuki", builder => {
     // @ts-expect-error 
     builder.sayAsInterjection("codswallop")
@@ -994,7 +993,7 @@ jaJpBuilder
     .sayAsTelephone("telephone")
     .sayAsTime("time")
     .sayAsUnit("unit")
-
+    
     .sentence(sentenceBuilder => {
         sentenceBuilder.whisper
 
@@ -1076,12 +1075,15 @@ jaJpBuilder
         voiceBuilder.sayAsTelephone
         voiceBuilder.sayAsTime
         voiceBuilder.sayAsUnit
-        voiceBuilder.sayAsInterjection
+        
         voiceBuilder.sentence
         voiceBuilder.sub
         voiceBuilder.voice
         voiceBuilder.voiceFromSkillLocale
         voiceBuilder.word
+
+        // @ts-expect-error - speechcon incompatible tags
+        voiceBuilder.sayAsInterjection
     })
     .voiceFromSkillLocale("Mizuki",voiceBuilder => {
         voiceBuilder.whisper
@@ -1240,6 +1242,20 @@ jaJpBuilder
         wordBuilder.sentence
     })
 
-    .build();
+// #region incompatible tags - demo that applies at any depth
 
+// #region voice prohibits
 
+    jaJpBuilder.sayAsInterjection
+    jaJpBuilder.voice("Amy",builder => {
+        // @ts-expect-error
+        builder.sayAsInterjection
+        builder.paragraph(builder2 => {
+            // @ts-expect-error
+            builder2.sayAsInterjection
+        })
+    });
+
+// #endregion
+
+// #endregion

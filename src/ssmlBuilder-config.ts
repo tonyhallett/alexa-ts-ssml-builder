@@ -108,6 +108,7 @@ const commonDomainBuilderMethods = [
     "sub",
     "whisper",
     "word"
+    // not adding voice
 ] as const satisfies Readonly<AllBuilderMethods[]>;
 const funBuilderMethods = [
     ...commonDomainBuilderMethods

@@ -1,5 +1,6 @@
 import { RestrictedBuilder } from "./restrictedBuilder";
-import { AllBuilderMethods, LangOrDefault, SSMLBuilder, VoiceNamesOrDefault } from "./ssmlBuilder";
+import { AllBuilderMethods, LangOrDefault, VoiceNamesOrDefault } from "./ssmlBuilder";
+import { Restrictions } from "./treeRestrictions";
 import { LangLocale } from "./voices";
 
 export type TextOrBuilderCallback<
@@ -7,11 +8,13 @@ export type TextOrBuilderCallback<
     TSkillLocale extends LangLocale,
     TVoice extends VoiceNamesOrDefault,
     TLang extends LangOrDefault,
+    TRestrictions extends Restrictions
 > = string | 
 ((builder:RestrictedBuilder<
     TPicks,
     TSkillLocale,
     TVoice,
-    TLang
+    TLang,
+    TRestrictions
     >
-) => void);
+) => void)
