@@ -14,4 +14,4 @@ export type TextOrBuilderCallback<
     TVoice,
     TLang
     >
-) => void)
+) => void);
