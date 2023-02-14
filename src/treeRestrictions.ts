@@ -25,11 +25,6 @@ const treeRestrictions = {
     prosodyPitch:true,
     prosodyPitchAndRate:true,
     prosodyPitchRateVolume:true,
-    fun:true,
-    conversational:true,
-    longForm:true,
-    music:true,
-    news:true
   },
   emphasis: {
     sayAsInterjection: true,
@@ -66,6 +61,9 @@ const treeRestrictions = {
     voiceFromSkillLocale:true,
     emphasis:true,
     emphasisDefault:true,
+    prosodyPitch:true,
+    prosodyPitchAndRate:true,
+    prosodyPitchRateVolume:true,
   }
 
 } satisfies Record<

@@ -615,16 +615,12 @@ jaJpBuilder
     emphasisBuilder.emphasis;
     emphasisBuilder.emphasisDefault;
     emphasisBuilder.lang;
-
     emphasisBuilder.phonemeIPA;
     emphasisBuilder.phonemeXSampa;
     emphasisBuilder.phonemeAnyLanguageIPA;
     emphasisBuilder.phonemeAnyLanguageXSampa;
     emphasisBuilder.phonemeLanguageIPA;
     emphasisBuilder.phonemeLanguageXSampa;
-    emphasisBuilder.prosodyPitch;
-    emphasisBuilder.prosodyPitchAndRate;
-    emphasisBuilder.prosodyPitchRateVolume;
     emphasisBuilder.prosodyRate;
     emphasisBuilder.prosodyRateVolume;
     emphasisBuilder.prosodyVolume;
@@ -639,17 +635,27 @@ jaJpBuilder
     emphasisBuilder.sayAsTelephone;
     emphasisBuilder.sayAsTime;
     emphasisBuilder.sayAsUnit;
-    emphasisBuilder.sayAsInterjection;
-
-    emphasisBuilder.sub;
-    emphasisBuilder.voice;
-    emphasisBuilder.voiceFromSkillLocale;
+    
     emphasisBuilder.word;
 
     // @ts-expect-error
     emphasisBuilder.paragraph;
     // @ts-expect-error
     emphasisBuilder.sentence;
+
+    // incompatible tags
+    // @ts-expect-error
+    emphasisBuilder.prosodyPitch;
+    // @ts-expect-error
+    emphasisBuilder.prosodyPitchAndRate;
+    // @ts-expect-error
+    emphasisBuilder.prosodyPitchRateVolume;
+    // @ts-expect-error
+    emphasisBuilder.sayAsInterjection;
+    // @ts-expect-error
+    emphasisBuilder.voice;
+    // @ts-expect-error
+    emphasisBuilder.voiceFromSkillLocale;
   })
   .lang("de-DE", (langBuilder) => {
     langBuilder.whisper;
@@ -750,8 +756,6 @@ jaJpBuilder
     prosodyPitchBuilder.audio;
     prosodyPitchBuilder.audioSoundbank;
     prosodyPitchBuilder.break;
-    prosodyPitchBuilder.emphasis;
-    prosodyPitchBuilder.emphasisDefault;
     prosodyPitchBuilder.lang;
     prosodyPitchBuilder.paragraph;
     prosodyPitchBuilder.phonemeIPA;
@@ -777,12 +781,22 @@ jaJpBuilder
     prosodyPitchBuilder.sayAsTelephone;
     prosodyPitchBuilder.sayAsTime;
     prosodyPitchBuilder.sayAsUnit;
-    prosodyPitchBuilder.sayAsInterjection;
     prosodyPitchBuilder.sentence;
     prosodyPitchBuilder.sub;
-    prosodyPitchBuilder.voice;
-    prosodyPitchBuilder.voiceFromSkillLocale;
     prosodyPitchBuilder.word;
+
+    // incompatible tags
+    // @ts-expect-error
+    prosodyPitchBuilder.emphasis;
+    // @ts-expect-error
+    prosodyPitchBuilder.emphasisDefault;
+    // @ts-expect-error
+    prosodyPitchBuilder.sayAsInterjection;
+    // @ts-expect-error
+    prosodyPitchBuilder.voice;
+    // @ts-expect-error
+    prosodyPitchBuilder.voiceFromSkillLocale;
+
   })
   .prosodyPitchAndRate("low", "fast", (prosodyPitchBuilder) => {
     prosodyPitchBuilder.whisper;
@@ -791,8 +805,7 @@ jaJpBuilder
     prosodyPitchBuilder.audio;
     prosodyPitchBuilder.audioSoundbank;
     prosodyPitchBuilder.break;
-    prosodyPitchBuilder.emphasis;
-    prosodyPitchBuilder.emphasisDefault;
+    
     prosodyPitchBuilder.lang;
     prosodyPitchBuilder.paragraph;
     prosodyPitchBuilder.phonemeIPA;
@@ -818,12 +831,21 @@ jaJpBuilder
     prosodyPitchBuilder.sayAsTelephone;
     prosodyPitchBuilder.sayAsTime;
     prosodyPitchBuilder.sayAsUnit;
-    prosodyPitchBuilder.sayAsInterjection;
     prosodyPitchBuilder.sentence;
     prosodyPitchBuilder.sub;
-    prosodyPitchBuilder.voice;
-    prosodyPitchBuilder.voiceFromSkillLocale;
     prosodyPitchBuilder.word;
+
+    // incompatible tags
+    // @ts-expect-error
+    prosodyPitchBuilder.emphasis;
+    // @ts-expect-error
+    prosodyPitchBuilder.emphasisDefault;
+    // @ts-expect-error
+    prosodyPitchBuilder.sayAsInterjection;
+    // @ts-expect-error
+    prosodyPitchBuilder.voice;
+    // @ts-expect-error
+    prosodyPitchBuilder.voiceFromSkillLocale;
   })
   .prosodyPitchRateVolume("low", "fast", "loud", (prosodyPitchBuilder) => {
     prosodyPitchBuilder.whisper;
@@ -832,8 +854,7 @@ jaJpBuilder
     prosodyPitchBuilder.audio;
     prosodyPitchBuilder.audioSoundbank;
     prosodyPitchBuilder.break;
-    prosodyPitchBuilder.emphasis;
-    prosodyPitchBuilder.emphasisDefault;
+
     prosodyPitchBuilder.lang;
     prosodyPitchBuilder.paragraph;
     prosodyPitchBuilder.phonemeIPA;
@@ -859,12 +880,21 @@ jaJpBuilder
     prosodyPitchBuilder.sayAsTelephone;
     prosodyPitchBuilder.sayAsTime;
     prosodyPitchBuilder.sayAsUnit;
-    prosodyPitchBuilder.sayAsInterjection;
     prosodyPitchBuilder.sentence;
     prosodyPitchBuilder.sub;
-    prosodyPitchBuilder.voice;
-    prosodyPitchBuilder.voiceFromSkillLocale;
     prosodyPitchBuilder.word;
+
+    // incompatible tags
+    // @ts-expect-error
+    prosodyPitchBuilder.emphasis;
+    // @ts-expect-error
+    prosodyPitchBuilder.emphasisDefault;
+    // @ts-expect-error
+    prosodyPitchBuilder.sayAsInterjection;
+    // @ts-expect-error
+    prosodyPitchBuilder.voice;
+    // @ts-expect-error
+    prosodyPitchBuilder.voiceFromSkillLocale;
   })
   .prosodyRate("fast", (prosodySafeBuilder) => {
     prosodySafeBuilder.whisper;
@@ -1057,8 +1087,7 @@ jaJpBuilder
     voiceBuilder.audio;
     voiceBuilder.audioSoundbank;
     voiceBuilder.break;
-    voiceBuilder.emphasis;
-    voiceBuilder.emphasisDefault;
+    
     voiceBuilder.lang;
     voiceBuilder.paragraph;
     voiceBuilder.phonemeIPA;
@@ -1067,9 +1096,7 @@ jaJpBuilder
     voiceBuilder.phonemeAnyLanguageXSampa;
     voiceBuilder.phonemeLanguageIPA;
     voiceBuilder.phonemeLanguageXSampa;
-    voiceBuilder.prosodyPitch;
-    voiceBuilder.prosodyPitchAndRate;
-    voiceBuilder.prosodyPitchRateVolume;
+    
     voiceBuilder.prosodyRate;
     voiceBuilder.prosodyRateVolume;
     voiceBuilder.prosodyVolume;
@@ -1091,8 +1118,19 @@ jaJpBuilder
     voiceBuilder.voiceFromSkillLocale;
     voiceBuilder.word;
 
-    // @ts-expect-error - speechcon incompatible tags
+    // Incompatible tags
+    // @ts-expect-error
     voiceBuilder.sayAsInterjection;
+    // @ts-expect-error 
+    voiceBuilder.emphasis;
+    // @ts-expect-error
+    voiceBuilder.emphasisDefault;
+    // @ts-expect-error
+    voiceBuilder.prosodyPitch;
+    // @ts-expect-error
+    voiceBuilder.prosodyPitchAndRate;
+    // @ts-expect-error
+    voiceBuilder.prosodyPitchRateVolume;
   })
   .voiceFromSkillLocale("Mizuki", (voiceBuilder) => {
     voiceBuilder.whisper;
@@ -1101,8 +1139,6 @@ jaJpBuilder
     voiceBuilder.audio;
     voiceBuilder.audioSoundbank;
     voiceBuilder.break;
-    voiceBuilder.emphasis;
-    voiceBuilder.emphasisDefault;
     voiceBuilder.lang;
     voiceBuilder.paragraph;
     voiceBuilder.phonemeIPA;
@@ -1111,9 +1147,6 @@ jaJpBuilder
     voiceBuilder.phonemeAnyLanguageXSampa;
     voiceBuilder.phonemeLanguageIPA;
     voiceBuilder.phonemeLanguageXSampa;
-    voiceBuilder.prosodyPitch;
-    voiceBuilder.prosodyPitchAndRate;
-    voiceBuilder.prosodyPitchRateVolume;
     voiceBuilder.prosodyRate;
     voiceBuilder.prosodyRateVolume;
     voiceBuilder.prosodyVolume;
@@ -1128,12 +1161,25 @@ jaJpBuilder
     voiceBuilder.sayAsTelephone;
     voiceBuilder.sayAsTime;
     voiceBuilder.sayAsUnit;
-    voiceBuilder.sayAsInterjection;
     voiceBuilder.sentence;
     voiceBuilder.sub;
     voiceBuilder.voice;
     voiceBuilder.voiceFromSkillLocale;
     voiceBuilder.word;
+
+    // incompatible tags
+    // @ts-expect-error
+    voiceBuilder.emphasis;
+    // @ts-expect-error
+    voiceBuilder.emphasisDefault;
+    // @ts-expect-error
+    voiceBuilder.prosodyPitch;
+    // @ts-expect-error
+    voiceBuilder.prosodyPitchAndRate;
+    // @ts-expect-error
+    voiceBuilder.prosodyPitchRateVolume;
+    // @ts-expect-error
+    voiceBuilder.sayAsInterjection;
   })
 
   .whisper((whisperBuilder) => {
@@ -1252,18 +1298,242 @@ jaJpBuilder
 
 // #region incompatible tags - demo that applies at any depth
 
+// #region domain prohibits
+
+jaJpBuilder.fun(builder => {
+  // @ts-expect-error
+  builder.sayAsInterjection
+  // @ts-expect-error
+  builder.emotion
+  // @ts-expect-error
+  builder.emphasis
+  // @ts-expect-error
+  builder.emphasisDefault
+  // @ts-expect-error
+  builder.prosodyPitch;
+  // @ts-expect-error
+  builder.prosodyPitchAndRate;
+  // @ts-expect-error
+  builder.prosodyPitchRateVolume;
+
+  // @ts-expect-error
+  builder.news
+  // @ts-expect-error
+  builder.music
+  // @ts-expect-error
+  builder.longForm
+
+  builder.conversational
+
+  builder.paragraph(builder2 => {
+    // @ts-expect-error
+    builder2.sayAsInterjection
+    // @ts-expect-error
+    builder2.emotion
+    // @ts-expect-error
+    builder2.emphasis
+    // @ts-expect-error
+    builder2.emphasisDefault
+
+    // @ts-expect-error
+    builder2.prosodyPitch;
+    // @ts-expect-error
+    builder2.prosodyPitchAndRate;
+    // @ts-expect-error
+    builder2.prosodyPitchRateVolume;
+  })
+})
+const otherDomains = [enUSBuilder.music, enUSBuilder.news, enUSBuilder.longForm, enUSBuilder.conversational] as const;
+otherDomains.forEach(domain => domain(builder => {
+  // @ts-expect-error
+  builder.sayAsInterjection
+  // @ts-expect-error
+  builder.emotion
+  // @ts-expect-error
+  builder.emphasis
+  // @ts-expect-error
+  builder.emphasisDefault
+  // @ts-expect-error
+  builder.prosodyPitch;
+  // @ts-expect-error
+  builder.prosodyPitchAndRate;
+  // @ts-expect-error
+  builder.prosodyPitchRateVolume;
+
+  builder.news
+  builder.longForm
+  builder.music
+  builder.conversational
+
+  // @ts-expect-error
+  builder.fun
+
+  builder.paragraph(builder2 => {
+    // @ts-expect-error
+    builder2.sayAsInterjection
+    // @ts-expect-error
+    builder2.emotion
+    // @ts-expect-error
+    builder2.emphasis
+    // @ts-expect-error
+    builder2.emphasisDefault
+
+    // @ts-expect-error
+    builder2.prosodyPitch;
+    // @ts-expect-error
+    builder2.prosodyPitchAndRate;
+    // @ts-expect-error
+    builder2.prosodyPitchRateVolume;
+
+    builder2.news
+    builder2.longForm
+    builder2.music
+    builder2.conversational
+  })
+}))
+
+// might need the deeper voice test .....
+
+//#endregion
+
 // #region voice prohibits
 
 jaJpBuilder.sayAsInterjection;
-jaJpBuilder.voice("Amy", (builder) => {
-  // @ts-expect-error
-  builder.sayAsInterjection;
-  builder.paragraph((builder2) => {
+jaJpBuilder.emphasis;
+jaJpBuilder.emphasisDefault;
+jaJpBuilder.prosodyPitch;
+jaJpBuilder.prosodyPitchAndRate;
+jaJpBuilder.prosodyPitchRateVolume;
+jaJpBuilder.voice("Joanna", (builder) => {
+  builder.paragraph((builder2) => { // paragraph builder allows all tags except paragraph
     // @ts-expect-error
     builder2.sayAsInterjection;
+    // @ts-expect-error
+    builder2.emphasis
+    // @ts-expect-error
+    builder2.emphasisDefault
+    // @ts-expect-error
+    builder2.prosodyPitch;
+    // @ts-expect-error
+    builder2.prosodyPitchAndRate;
+    // @ts-expect-error
+    builder2.prosodyPitchRateVolume;
+    
+    // have already demonstrated voice with emotion and domains 
   });
 });
 
+// #endregion
+
+// #region emphasis prohibits
+jaJpBuilder.emphasis("moderate", builder => {
+  builder.whisper(builder2 => {
+    // @ts-expect-error
+    builder2.sayAsInterjection
+    // @ts-expect-error
+    builder2.emotion
+    // @ts-expect-error
+    builder2.voice
+    // @ts-expect-error
+    builder2.voiceFromSkillLocale
+    // @ts-expect-error
+    builder2.prosodyPitch;
+    // @ts-expect-error
+    builder2.prosodyPitchAndRate;
+    // @ts-expect-error
+    builder2.prosodyPitchRateVolume;
+    // @ts-expect-error
+    builder2.fun
+
+  })
+})
+
+enUSBuilder.emphasis("moderate", builder => {
+  builder.whisper(builder2 => {
+    // @ts-expect-error
+    builder2.conversational
+    // @ts-expect-error
+    builder2.longForm
+    // @ts-expect-error
+    builder2.music
+    // @ts-expect-error
+    builder2.news
+  })
+})
+
+// #endregion
+
+// #region prosody pitch prohibits
+
+jaJpBuilder.prosodyPitch("high", builder => {
+  builder.paragraph(builder2 => {
+    // @ts-expect-error
+    builder2.sayAsInterjection
+    // @ts-expect-error
+    builder2.emotion
+    // @ts-expect-error
+    builder2.voice
+    // @ts-expect-error
+    builder2.voiceFromSkillLocale
+    // @ts-expect-error
+    builder2.emphasis
+    // @ts-expect-error
+    builder2.emphasisDefault
+    // @ts-expect-error
+    builder2.fun
+
+  })
+});
+
+enUSBuilder.prosodyPitch("high", builder => {
+  builder.paragraph(builder2 => {
+    // @ts-expect-error
+    builder2.conversational
+    // @ts-expect-error
+    builder2.longForm
+    // @ts-expect-error
+    builder2.music
+    // @ts-expect-error
+    builder2.news
+  })
+});
+
+// #endregion
+
+// #region emotion prohibits
+
+jaJpBuilder.emotion("excited","high", builder => {
+  builder.paragraph(builder2 => {
+    // @ts-expect-error
+    builder2.sayAsInterjection
+    // @ts-expect-error
+    builder2.emphasis
+    // @ts-expect-error
+    builder2.emphasisDefault
+    // @ts-expect-error
+    builder2.prosodyPitch;
+    // @ts-expect-error
+    builder2.prosodyPitchAndRate;
+    // @ts-expect-error
+    builder2.prosodyPitchRateVolume;
+    // @ts-expect-error
+    builder2.fun
+    // voice already demonstrated
+  })
+});
+
+enUSBuilder.emotion("excited","high", builder => {
+  builder.paragraph(builder2 => {
+    // @ts-expect-error
+    builder2.conversational
+    // @ts-expect-error
+    builder2.longForm
+    // @ts-expect-error
+    builder2.music
+    // @ts-expect-error
+    builder2.news
+  })
+});
 // #endregion
 
 // #endregion

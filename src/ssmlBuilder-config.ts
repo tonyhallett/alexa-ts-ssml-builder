@@ -112,14 +112,6 @@ const commonDomainBuilderMethods = [
         music
         news
         fun
-
-        incompatible possibly
-        emotion
-        emphasis
-        prosody pitch
-        interjection
-        voice
-
     */
   ...audioMethodNames,
   "break",
@@ -132,6 +124,10 @@ const commonDomainBuilderMethods = [
   "sub",
   "whisper",
   "word",
+  "conversational",
+  "longForm",
+  "music",
+  "news"
   // not adding voice
 ] as const satisfies Readonly<AllBuilderMethods[]>;
 const funBuilderMethods = [
