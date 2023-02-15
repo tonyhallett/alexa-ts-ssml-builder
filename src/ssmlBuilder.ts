@@ -157,7 +157,7 @@ export interface SSMLBuilder<
     >
   ): TReturn;
   //#endregion
-  break(strength?: BreakStrength, milliseconds?: number): TReturn;
+  break(strengthOrMs?: BreakStrength | number): TReturn;
   paragraph(
     textOrCallback: TextOrBuilderCallback<
       ParagraphBuilderMethods,

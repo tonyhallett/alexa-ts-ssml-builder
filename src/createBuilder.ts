@@ -50,6 +50,25 @@ export type RootBuilder<TSkillLocale extends LangLocale> = RestrictedBuilder<
   "Build"
 >;
 
+interface TextNode{
+  isText:true,
+  text:string
+}
+
+interface Attribute{
+  name:string,
+  value:string
+}
+
+interface ElementNode{
+  isText:false,
+  elementName:string,
+  attributes?:Attribute[]
+  getChildren?:() => Node[]
+}
+
+type Node = TextNode | ElementNode;
+
 // implement when finished
 class AlexaSSMLBuilder
   implements
@@ -61,9 +80,70 @@ class AlexaSSMLBuilder
       AlexaSSMLBuilder
     >
 {
-  text(text: string): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+  private nodes:Node[] = [];
+  constructor(private isRoot = true){
+    
   }
+    
+  private handleTextOrCallback(textOrCallback:string|any,elementName:string,attributes?:Attribute[]){
+    if (typeof textOrCallback === "string") {
+      this.nodes.push({isText:false,attributes,elementName,getChildren:() =>[this.getTextNode(textOrCallback)]})
+    } else {
+      const newBuilder = new AlexaSSMLBuilder();
+      this.nodes.push({isText:false,attributes,elementName,getChildren:() =>{
+        return newBuilder.nodes;
+      }})
+      textOrCallback(newBuilder);
+    }
+  }
+
+  private escapeText(text:string){    return text;  }  
+  
+  private getNodeSSML(node:Node){
+    if(node.isText){
+      return this.escapeText(node.text);
+    }
+
+    let attributes = "";
+    if(node.attributes){
+      node.attributes.forEach(attribute =>{
+        attributes+=` ${attribute.name}="${attribute.value}"`
+      })
+    }
+    if(node.getChildren){
+      const childrenSSML = this.getNodesSSML(node.getChildren());
+      return `<${node.elementName}${attributes}>${childrenSSML}</${node.elementName}>`
+    }
+    
+    return `<${node.elementName}${attributes}/>`
+  }
+
+  private getNodesSSML(nodes:Node[]):string{
+    let ssml = "";    
+    nodes.forEach(node =>{
+      ssml += this.getNodeSSML(node);
+    })
+    return ssml;
+  }
+
+  private getTextNode(text:string):TextNode{
+    return {isText:true,text};
+  }
+
+  build() :string {    
+    if(!this.isRoot){
+      throw new Error("Build to only be called from the root builder");
+    }
+    let ssml = this.getNodesSSML(this.nodes);
+    return `<speak>${ssml}</speak>`
+  }
+
+  
+  text(text: string): AlexaSSMLBuilder {
+    this.nodes.push(this.getTextNode(text));
+    return this;
+  }
+  
   voice<TNewVoice extends AllVoiceNames>(
     name: TNewVoice,
     textOrCallback: TextOrBuilderCallback<
@@ -104,6 +184,7 @@ class AlexaSSMLBuilder
   ): AlexaSSMLBuilder {
     throw new Error("Method not implemented.");
   }
+  
   fun(
     textOrCallback: TextOrBuilderCallback<
       FunBuilderMethods,
@@ -183,11 +264,20 @@ class AlexaSSMLBuilder
   ): AlexaSSMLBuilder {
     throw new Error("Method not implemented.");
   }
+  
   break(
-    strength?: BreakStrength | undefined,
-    milliseconds?: number | undefined
+    strengthOrMs?: BreakStrength | number
   ): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    const attributes:Attribute[] = [];
+    if(strengthOrMs !== undefined){
+      if (typeof strengthOrMs === "string") {
+        attributes.push({name:"strength", value:strengthOrMs})
+      }else{
+        attributes.push({name:"time",value:`${strengthOrMs}ms`})
+      }
+    }
+    this.nodes.push({isText:false,elementName:"break",attributes})
+    return this;
   }
   paragraph(
     textOrCallback: TextOrBuilderCallback<
@@ -198,7 +288,8 @@ class AlexaSSMLBuilder
       "default"
     >
   ): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    this.handleTextOrCallback(textOrCallback,"p");
+    return this;
   }
   sentence(
     textOrCallback: TextOrBuilderCallback<
@@ -209,8 +300,10 @@ class AlexaSSMLBuilder
       "default"
     >
   ): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    this.handleTextOrCallback(textOrCallback,"s");
+    return this;
   }
+
   word(
     role: WordRole,
     textOrCallback: TextOrBuilderCallback<
@@ -221,17 +314,28 @@ class AlexaSSMLBuilder
       "default"
     >
   ): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    this.handleTextOrCallback(textOrCallback,"w", [{name:"role", value:role.toString()}]);
+    return this;
   }
+
   sub(alias: string, aliased: string): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    this.nodes.push({
+      isText:false,
+      elementName:"sub", 
+      attributes:[{name:"alias", value:alias}], 
+      getChildren:()=> [this.getTextNode(aliased)]
+    });
+    return this;
   }
+
   audio(src: string): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    this.nodes.push({isText:false,elementName:"audio",attributes:[{name:"src", value:src}]});
+    return this;
   }
   audioSoundbank(soundBankSound: SoundbankSound): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    return this.audio(soundBankSound.soundbankUrl);
   }
+
   emphasis(
     level: EmphasisLevel,
     textOrCallback: TextOrBuilderCallback<
@@ -331,6 +435,7 @@ class AlexaSSMLBuilder
   ): AlexaSSMLBuilder {
     throw new Error("Method not implemented.");
   }
+
   phonemeIPA(phonetic: string, text?: string | undefined): AlexaSSMLBuilder {
     throw new Error("Method not implemented.");
   }
@@ -349,8 +454,15 @@ class AlexaSSMLBuilder
   phonemeLanguageXSampa(...phonemes: XSampaPhonemes[]): AlexaSSMLBuilder {
     throw new Error("Method not implemented.");
   }
+  
+
+  private sayAs(as:string, saidAs:string, additionalAttributes:Attribute[] = []){
+    additionalAttributes.push({name:"interpret-as",value:as});
+    this.nodes.push({isText:false,elementName:"say-as",attributes:additionalAttributes,getChildren:() => [this.getTextNode(saidAs)]});
+    return this;
+  }
   sayAsExpletive(text: string): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    return this.sayAs("expletive", text);
   }
   sayAsAddress(text: string): AlexaSSMLBuilder {
     throw new Error("Method not implemented.");
