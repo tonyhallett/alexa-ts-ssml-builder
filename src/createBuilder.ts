@@ -74,7 +74,6 @@ type Node = TextNode | ElementNode;
 //todo
 // is there an attribute value that needs escaping ?
 // preferable (for readability ) not to escape double quoutes in text content.
-// no way of determining if a single quotation mark is being used for quoting or an apostrophe.
 // assumption - does not matter if escape double quotation marks.  But for a sentence 
 // with single quotes could they be considered two apostrophes ?
 // the first is not preceded by a letter so should not be considered.
@@ -133,7 +132,7 @@ export function escapeXmlCharacters(input : string) : string {
 }
 
 // implement when finished
-class AlexaSSMLBuilder
+export class AlexaSSMLBuilder
   implements
     SSMLBuilder<
       LangLocale,
@@ -147,7 +146,11 @@ class AlexaSSMLBuilder
   constructor(private escapeInvalidXML = true, private isRoot = false){
     
   }
-    
+  
+  private domain(name:string,textOrCallback:any){
+    return this.handleTextOrCallback(textOrCallback,"amazon:domain",[{name:"name",value:name}]);
+  }
+
   private handleTextOrCallback(textOrCallback:string|any,elementName:string,attributes?:Attribute[]){
     if (typeof textOrCallback === "string") {
       this.nodes.push({isText:false,attributes,elementName,getChildren:() =>[this.getTextNode(textOrCallback)]})
@@ -158,6 +161,7 @@ class AlexaSSMLBuilder
       }})
       textOrCallback(newBuilder);
     }
+    return this;
   }
 
   private getNodeSSML(node:Node){
@@ -199,6 +203,36 @@ class AlexaSSMLBuilder
     return {isText:true,text};
   }
 
+  private prosodyRateAttribute(rate:ProsodyRate):Attribute{
+    let rateValue:string;
+    if (typeof rate === "number") {
+      rateValue = `${rate}%`;
+    } else{
+      rateValue = rate;
+    }
+    return {name:"rate", value:rateValue}
+  }
+
+  private prosodyPitchAttribute(pitch:ProsodyPitch):Attribute{
+    let pitchValue:string;
+    if (typeof pitch === "number") {
+      pitchValue = `${pitch}%`;
+    } else{
+      pitchValue = pitch;
+    }
+    return {name:"pitch", value:pitchValue}
+  }
+
+  private prosodyVolumeAttribute(volume:ProsodyVolume):Attribute{
+    let rateValue:string;
+    if (typeof volume === "number") {
+      rateValue = `${volume}dB`;
+    } else{
+      rateValue = volume;
+    }
+    return {name:"volume", value:rateValue}
+  }
+
   build() :string {    
     if(!this.isRoot){
       throw new Error("Build to only be called from the root builder");
@@ -206,7 +240,6 @@ class AlexaSSMLBuilder
     return  `<speak>${this.getNodesSSML(this.nodes)}</speak>`
   }
 
-  
   text(text: string): AlexaSSMLBuilder {
     this.nodes.push(this.getTextNode(text));
     return this;
@@ -222,7 +255,7 @@ class AlexaSSMLBuilder
       "default"
     >
   ): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    return this.handleTextOrCallback(textOrCallback,"voice",[{name:"name",value:name}]);
   }
   voiceFromSkillLocale<TNewVoice extends AllVoiceNames>(
     name: TNewVoice,
@@ -234,11 +267,7 @@ class AlexaSSMLBuilder
       "default"
     >
   ): AlexaSSMLBuilder {
-    if (typeof textOrCallback === "string") {
-    } else {
-      textOrCallback(this as any);
-    }
-    return this;
+    return this.voice(name,textOrCallback);
   }
   lang<TNewLang extends LangLocale>(
     locale: TNewLang,
@@ -250,7 +279,7 @@ class AlexaSSMLBuilder
       "default"
     >
   ): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    return this.handleTextOrCallback(textOrCallback,"lang",[{name:"xml:lang",value:locale}]);
   }
   
   fun(
@@ -262,7 +291,7 @@ class AlexaSSMLBuilder
       "default"
     >
   ): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    return this.domain("fun", textOrCallback);
   }
   conversational(
     textOrCallback: TextOrBuilderCallback<
@@ -273,7 +302,7 @@ class AlexaSSMLBuilder
       "default"
     >
   ): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    return this.domain("conversational", textOrCallback);
   }
   longForm(
     textOrCallback: TextOrBuilderCallback<
@@ -284,7 +313,7 @@ class AlexaSSMLBuilder
       "default"
     >
   ): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    return this.domain("long-form", textOrCallback);
   }
   music(
     textOrCallback: TextOrBuilderCallback<
@@ -295,7 +324,7 @@ class AlexaSSMLBuilder
       "default"
     >
   ): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    return this.domain("music", textOrCallback);
   }
   news(
     textOrCallback: TextOrBuilderCallback<
@@ -306,7 +335,7 @@ class AlexaSSMLBuilder
       "default"
     >
   ): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    return this.domain("news", textOrCallback);
   }
   emotion(
     name: Emotion,
@@ -319,7 +348,7 @@ class AlexaSSMLBuilder
       "default"
     >
   ): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    return this.handleTextOrCallback(textOrCallback,"amazon:emotion",[{name:"name",value:name},{name:"intensity",value:intensity}])
   }
   whisper(
     textOrCallback: TextOrBuilderCallback<
@@ -330,7 +359,7 @@ class AlexaSSMLBuilder
       "default"
     >
   ): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    return this.handleTextOrCallback(textOrCallback,"amazon:effect",[{name:"name", value:"whisper"}])  
   }
   
   break(
@@ -356,8 +385,7 @@ class AlexaSSMLBuilder
       "default"
     >
   ): AlexaSSMLBuilder {
-    this.handleTextOrCallback(textOrCallback,"p");
-    return this;
+    return this.handleTextOrCallback(textOrCallback,"p");
   }
   sentence(
     textOrCallback: TextOrBuilderCallback<
@@ -368,8 +396,7 @@ class AlexaSSMLBuilder
       "default"
     >
   ): AlexaSSMLBuilder {
-    this.handleTextOrCallback(textOrCallback,"s");
-    return this;
+    return this.handleTextOrCallback(textOrCallback,"s");
   }
 
   word(
@@ -382,8 +409,7 @@ class AlexaSSMLBuilder
       "default"
     >
   ): AlexaSSMLBuilder {
-    this.handleTextOrCallback(textOrCallback,"w", [{name:"role", value:role.toString()}]);
-    return this;
+    return this.handleTextOrCallback(textOrCallback,"w", [{name:"role", value:role.toString()}]);
   }
 
   sub(alias: string, aliased: string): AlexaSSMLBuilder {
@@ -414,7 +440,7 @@ class AlexaSSMLBuilder
       "default"
     >
   ): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    return this.handleTextOrCallback(textOrCallback, "emphasis", [{name:"level", value:level}]);
   }
   emphasisDefault(
     textOrCallback: TextOrBuilderCallback<
@@ -425,8 +451,9 @@ class AlexaSSMLBuilder
       "default"
     >
   ): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    return this.handleTextOrCallback(textOrCallback, "emphasis");
   }
+
   prosodyRate(
     rate: ProsodyRate,
     textOrCallback: TextOrBuilderCallback<
@@ -437,7 +464,7 @@ class AlexaSSMLBuilder
       "default"
     >
   ): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    return this.handleTextOrCallback(textOrCallback,"prosody",[this.prosodyRateAttribute(rate)])
   }
   prosodyVolume(
     volume: ProsodyVolume,
@@ -449,7 +476,7 @@ class AlexaSSMLBuilder
       "default"
     >
   ): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    return this.handleTextOrCallback(textOrCallback,"prosody",[this.prosodyVolumeAttribute(volume)]);
   }
   prosodyRateVolume(
     rate: ProsodyRate,
@@ -462,7 +489,9 @@ class AlexaSSMLBuilder
       "default"
     >
   ): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    return this.handleTextOrCallback(textOrCallback,"prosody",[
+      this.prosodyRateAttribute(rate),
+      this.prosodyVolumeAttribute(volume)])
   }
   prosodyPitch(
     pitch: ProsodyPitch,
@@ -474,7 +503,7 @@ class AlexaSSMLBuilder
       "default"
     >
   ): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    return this.handleTextOrCallback(textOrCallback,"prosody",[this.prosodyPitchAttribute(pitch)]);
   }
   prosodyPitchAndRate(
     pitch: ProsodyPitch,
@@ -487,7 +516,20 @@ class AlexaSSMLBuilder
       "default"
     >
   ): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    return this.handleTextOrCallback(textOrCallback,"prosody",[this.prosodyPitchAttribute(pitch),this.prosodyRateAttribute(rate)]);
+  }
+  prosodyPitchAndVolume(
+    pitch: ProsodyPitch,
+    volume: ProsodyVolume,
+    textOrCallback: TextOrBuilderCallback<
+      ProsodyPitchBuilderMethods,
+      LangLocale,
+      VoiceNamesOrDefault,
+      LangOrDefault,
+      "default"
+    >
+  ): AlexaSSMLBuilder {
+    return this.handleTextOrCallback(textOrCallback,"prosody",[this.prosodyPitchAttribute(pitch),this.prosodyVolumeAttribute(volume)]);
   }
   prosodyPitchRateVolume(
     pitch: ProsodyPitch,
@@ -501,26 +543,39 @@ class AlexaSSMLBuilder
       "default"
     >
   ): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    return this.handleTextOrCallback(textOrCallback,"prosody",[
+      this.prosodyPitchAttribute(pitch),
+      this.prosodyRateAttribute(rate),
+      this.prosodyVolumeAttribute(volume)
+    ]);
   }
 
+  private phoneme(phonetic: string, ipa:boolean, text?: string | undefined){
+    const alphabet = ipa ? "ipa" : "x-sampa";
+    const node:ElementNode = {isText:false,elementName:"phoneme", attributes:[{name:"alphabet", value:alphabet},{name:"ph", value:phonetic}]};
+    if(text!==undefined){
+      node.getChildren = () => [this.getTextNode(text)]
+    }
+    this.nodes.push(node);
+    return this;
+  }
   phonemeIPA(phonetic: string, text?: string | undefined): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    return this.phoneme(phonetic,true,text);
   }
   phonemeXSampa(phonetic: string, text?: string | undefined): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    return this.phoneme(phonetic,false,text);
   }
-  phonemeAnyLanguageIPA(...phonemes: IpaPhonemes[]): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+  phonemeAnyLanguageIPA(text:string,...phonemes: IpaPhonemes[]): AlexaSSMLBuilder {
+    return this.phonemeLanguageIPA(text,...phonemes);
   }
-  phonemeAnyLanguageXSampa(...phonemes: XSampaPhonemes[]): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+  phonemeAnyLanguageXSampa(text:string,...phonemes: XSampaPhonemes[]): AlexaSSMLBuilder {
+    return this.phonemeLanguageXSampa(text,...phonemes);
   }
-  phonemeLanguageIPA(...phonemes: IpaPhonemes[]): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+  phonemeLanguageIPA(text:string,...phonemes: IpaPhonemes[]): AlexaSSMLBuilder {
+    return this.phonemeIPA(phonemes.join(""),text);
   }
-  phonemeLanguageXSampa(...phonemes: XSampaPhonemes[]): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+  phonemeLanguageXSampa(text:string,...phonemes: XSampaPhonemes[]): AlexaSSMLBuilder {
+    return this.phonemeXSampa(phonemes.join(""),text);
   }
   
 

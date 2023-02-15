@@ -71,17 +71,17 @@ enGBBuilder.paragraph((builder) => {
 // #region phoneme tests
 jaJpBuilder.phonemeLanguageIPA("o:");
 // @ts-expect-error
-enGBBuilder.phonemeLanguageIPA("o:");
+enGBBuilder.phonemeLanguageIPA("text","o:");
 enGBBuilder.lang("ja-JP", (builder) => builder.phonemeLanguageIPA("o:")); // lang over skill locale
 enGBBuilder.voice("Takumi", (builder) => builder.phonemeLanguageIPA("o:")); // voice over skill locale
 enGBBuilder.voiceFromSkillLocale("Amy", (builder) => {
   // @ts-expect-error
-  builder.phonemeLanguageIPA("o:");
+  builder.phonemeLanguageIPA("text","o:");
 });
 jaJpBuilder.lang("en-GB", (builder) => {
   builder.voice("Takumi", (builder2) => {
     // @ts-expect-error
-    builder2.phonemeLanguageIPA("o:");
+    builder2.phonemeLanguageIPA("text","o:");
   });
 });
 // sub builders
@@ -90,7 +90,7 @@ jaJpBuilder.paragraph((builder) => {
 });
 enGBBuilder.paragraph((builder) => {
   // @ts-expect-error
-  builder.phonemeLanguageIPA("o:");
+  builder.phonemeLanguageIPA("text","o:");
 });
 // #endregion
 // #endregion
@@ -744,10 +744,10 @@ jaJpBuilder
 
   .phonemeIPA("an ipa phoneme")
   .phonemeXSampa("an x-sampa phoneme")
-  .phonemeAnyLanguageIPA()
-  .phonemeAnyLanguageXSampa()
-  .phonemeLanguageIPA()
-  .phonemeLanguageXSampa()
+  .phonemeAnyLanguageIPA("text")
+  .phonemeAnyLanguageXSampa("text")
+  .phonemeLanguageIPA("text")
+  .phonemeLanguageXSampa("text")
 
   .prosodyPitch("high", (prosodyPitchBuilder) => {
     prosodyPitchBuilder.whisper;

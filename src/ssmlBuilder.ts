@@ -273,6 +273,17 @@ export interface SSMLBuilder<
       AddRestriction<TRestrictions, "prosodyPitch">
     >
   ): TReturn;
+  prosodyPitchAndVolume(
+    pitch: ProsodyPitch,
+    volume: ProsodyVolume,
+    textOrCallback: TextOrBuilderCallback<
+      ProsodyPitchBuilderMethods,
+      TSkillLocale,
+      TVoice,
+      TLang,
+      AddRestriction<TRestrictions, "prosodyPitch">
+    >
+  ): TReturn;
   prosodyPitchRateVolume(
     pitch: ProsodyPitch,
     rate: ProsodyRate,
@@ -290,12 +301,14 @@ export interface SSMLBuilder<
   //#region phoneme
   phonemeIPA(phonetic: string, text?: string): TReturn;
   phonemeXSampa(phonetic: string, text?: string): TReturn;
-  phonemeAnyLanguageIPA(...phonemes: IpaPhonemes[]): TReturn;
-  phonemeAnyLanguageXSampa(...phonemes: XSampaPhonemes[]): TReturn;
+  phonemeAnyLanguageIPA(text:string,...phonemes: IpaPhonemes[]): TReturn;
+  phonemeAnyLanguageXSampa(text:string,...phonemes: XSampaPhonemes[]): TReturn;
   phonemeLanguageIPA(
+    text:string,
     ...phonemes: IpaLangPhoneme<TSkillLocale, TVoice, TLang>[]
   ): TReturn;
   phonemeLanguageXSampa(
+    text:string,
     ...phonemes: XSampaLangPhoneme<TSkillLocale, TVoice, TLang>[]
   ): TReturn;
   //#endregion
