@@ -72,4 +72,79 @@ describe("builder", () =>{
         const ssml = builder.sayAsExpletive("as expletive").build();
         expect(ssml).toEqual(`<speak><say-as interpret-as="expletive">as expletive</say-as></speak>`)
     });
+
+    it("should work with sayAs address", ()=>{
+        const builder = createBuilder();
+        const ssml = builder.sayAsAddress("as address").build();
+        expect(ssml).toEqual(`<speak><say-as interpret-as="address">as address</say-as></speak>`)
+    });
+
+    it("should work with sayAs telephone", ()=>{
+        const builder = createBuilder();
+        const ssml = builder.sayAsTelephone("1234567").build();
+        expect(ssml).toEqual(`<speak><say-as interpret-as="telephone">1234567</say-as></speak>`)
+    });
+
+    it("should work with sayAs time", ()=>{
+        const builder = createBuilder();
+        const ssml = builder.sayAsTime("time").build();
+        expect(ssml).toEqual(`<speak><say-as interpret-as="time">time</say-as></speak>`)
+    });
+
+    it("should work with sayAs unit", ()=>{
+        const builder = createBuilder();
+        const ssml = builder.sayAsUnit("1m").build();
+        expect(ssml).toEqual(`<speak><say-as interpret-as="unit">1m</say-as></speak>`)
+    });
+
+    it("should work with sayAs fraction", ()=>{
+        const builder = createBuilder();
+        const ssml = builder.sayAsFraction("3/20").build();
+        expect(ssml).toEqual(`<speak><say-as interpret-as="fraction">3/20</say-as></speak>`)
+    });
+
+    it("should work with sayAs digits", ()=>{
+        const builder = createBuilder();
+        const ssml = builder.sayAsDigits("1234567").build();
+        expect(ssml).toEqual(`<speak><say-as interpret-as="digits">1234567</say-as></speak>`)
+    });
+
+    it("should work with sayAs ordinal", ()=>{
+        const builder = createBuilder();
+        const ssml = builder.sayAsOrdinal("1").build();
+        expect(ssml).toEqual(`<speak><say-as interpret-as="ordinal">1</say-as></speak>`)
+    });
+
+    it("should work with sayAs cardinal", ()=>{
+        const builder = createBuilder();
+        const ssml = builder.sayAsCardinal("1").build();
+        expect(ssml).toEqual(`<speak><say-as interpret-as="cardinal">1</say-as></speak>`)
+    });
+
+    it("should work with sayAs characters", ()=>{
+        const builder = createBuilder();
+        const ssml = builder.sayAsCharacters("abc").build();
+        expect(ssml).toEqual(`<speak><say-as interpret-as="characters">abc</say-as></speak>`)
+    });
+
+    
+    it("should work with sayAs interjection", ()=>{
+        const builder = createBuilder();
+        const ssml = builder.sayAsInterjection("codswallop").build();
+        expect(ssml).toEqual(`<speak><say-as interpret-as="interjection">codswallop</say-as></speak>`)
+    });
+
+    
+    it("should work with sayAs interjection with suffix", ()=>{
+        const builder = createBuilder();
+        const ssml = builder.sayAsInterjection("codswallop","!").build();
+        expect(ssml).toEqual(`<speak><say-as interpret-as="interjection">codswallop!</say-as></speak>`)
+    });
+
+    
+    it("should work with sayAs date", ()=>{
+        const builder = createBuilder();
+        const ssml = builder.sayAsDate("date","dmy").build();
+        expect(ssml).toEqual(`<speak><say-as format="dmy" interpret-as="date">date</say-as></speak>`)
+    });
 })

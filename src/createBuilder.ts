@@ -69,6 +69,69 @@ interface ElementNode{
 
 type Node = TextNode | ElementNode;
 
+// from Alexa.escapeXmlCharacters
+
+//todo
+// is there an attribute value that needs escaping ?
+// preferable (for readability ) not to escape double quoutes in text content.
+// no way of determining if a single quotation mark is being used for quoting or an apostrophe.
+// assumption - does not matter if escape double quotation marks.  But for a sentence 
+// with single quotes could they be considered two apostrophes ?
+// the first is not preceded by a letter so should not be considered.
+// that then should make the second a quotation when it could have been deemed a plural ?
+// example - 'this is in quotes' 
+// can the backtick be used as an apostrophe ? Tony`s
+
+
+/*
+  https://docs.aws.amazon.com/polly/latest/dg/escapees.html
+  For the &, <, and > symbols, escape codes are always necessary when you use SSML. 
+  Additionallty, when you use the apostrophe/single quotation mark (') as an apostrophe, you must also use the escape code.
+
+However, when you use the double quotation mark ("), or the apostrophe/single quotation mark (') as a quotation mark, 
+then whether or not you use the escape code is dependent on context.
+
+Double quotation marks
+
+  Must be escaped when in a attribute value delimited by double quotes.
+  Do not need to be escaped when in textual context
+  Do not need to be escaped when in a attribute value delimited by single quotes.
+
+Single quotation marks
+
+  Must be escaped when used as an apostrophe. 
+  Do not need to be escaped when in textual context.
+  Do not need to be escaped when in a code attribute delimited by double quotes.
+
+
+*/
+const invalidXmlCharactersMapping = {
+  '&' : '&amp;',
+  '<' : '&lt;',
+  '>' : '&gt;',
+  '"' : '&quot;',
+  "'" : '&apos;',
+};
+
+const invalidXmlCharactersMappingReverse = {
+  '&amp;':'&',
+  '&lt;':'<',
+  '&gt;':'>',
+  '&quot;':'"',
+  '&apos;':"'",
+};
+
+/**
+ * return the string with all invalid XML characters escaped
+ * @param input
+ */
+export function escapeXmlCharacters(input : string) : string {
+  // sanitize any already escaped character to ensure they are not escaped more than once
+  const sanitizedInput = input.replace(/&amp;|&lt;|&gt;|&quot;|&apos;]/g, (c) => invalidXmlCharactersMappingReverse[c as keyof typeof invalidXmlCharactersMappingReverse ]);
+
+  return sanitizedInput.replace(/[&'"><]/g, (c) => invalidXmlCharactersMapping[c as keyof typeof invalidXmlCharactersMapping]);
+}
+
 // implement when finished
 class AlexaSSMLBuilder
   implements
@@ -81,7 +144,7 @@ class AlexaSSMLBuilder
     >
 {
   private nodes:Node[] = [];
-  constructor(private isRoot = true){
+  constructor(private escapeInvalidXML = true, private isRoot = false){
     
   }
     
@@ -97,17 +160,23 @@ class AlexaSSMLBuilder
     }
   }
 
-  private escapeText(text:string){    return text;  }  
-  
   private getNodeSSML(node:Node){
     if(node.isText){
-      return this.escapeText(node.text);
+      let text = node.text;
+      if(this.escapeInvalidXML){
+        text = escapeXmlCharacters(text);
+      }
+      return text;
     }
 
     let attributes = "";
     if(node.attributes){
       node.attributes.forEach(attribute =>{
-        attributes+=` ${attribute.name}="${attribute.value}"`
+        let attValue = attribute.value;
+        if(this.escapeInvalidXML){
+          attValue = escapeXmlCharacters(attValue);
+        }
+        attributes+=` ${attribute.name}="${attValue}"`
       })
     }
     if(node.getChildren){
@@ -134,8 +203,7 @@ class AlexaSSMLBuilder
     if(!this.isRoot){
       throw new Error("Build to only be called from the root builder");
     }
-    let ssml = this.getNodesSSML(this.nodes);
-    return `<speak>${ssml}</speak>`
+    return  `<speak>${this.getNodesSSML(this.nodes)}</speak>`
   }
 
   
@@ -465,45 +533,49 @@ class AlexaSSMLBuilder
     return this.sayAs("expletive", text);
   }
   sayAsAddress(text: string): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    return this.sayAs("address", text);
   }
   sayAsTelephone(text: string): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    /*
+       Interpret a value as a 7-digit or 10-digit telephone number. This can also handle extensions (for example, 2025551212x345).
+    */
+    return this.sayAs("telephone", text);
+  
   }
   sayAsTime(text: string): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    return this.sayAs("time", text);
   }
   sayAsUnit(text: string): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    return this.sayAs("unit", text);
   }
   sayAsFraction(text: string): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    return this.sayAs("fraction", text);
   }
   sayAsDigits(text: string): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    return this.sayAs("digits", text);
   }
   sayAsOrdinal(text: string): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    return this.sayAs("ordinal", text);
   }
   sayAsCardinal(text: string): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    return this.sayAs("cardinal", text);
   }
   sayAsCharacters(text: string): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    return this.sayAs("characters", text);
   }
   sayAsDate(text: string, format: SayAsDateFormat): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    return this.sayAs("date", text,[{name:"format", value:format}]);
   }
   sayAsInterjection<TSpeechcon extends AllSpeechcons>(
     speechcon: TSpeechcon,
-    suffix?: string | undefined
+    suffix: string = ""
   ): AlexaSSMLBuilder {
-    throw new Error("Method not implemented.");
+    return this.sayAs("interjection", `${speechcon}${suffix}`);
   }
 }
 
 export function createBuilder<
   TSkillLocale extends LangLocale
->(): RootBuilder<TSkillLocale> {
-  return new AlexaSSMLBuilder() as unknown as RootBuilder<TSkillLocale>;
+>(escapeInvalidXml = true): RootBuilder<TSkillLocale> {
+  return new AlexaSSMLBuilder(escapeInvalidXml, true) as unknown as RootBuilder<TSkillLocale>;
 }
