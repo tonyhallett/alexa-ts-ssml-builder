@@ -344,5 +344,29 @@ describe("builder", () =>{
             subBuilder = paragraphBuilder as AlexaSSMLBuilder;
         });
         expect(() => subBuilder!.build()).toThrowError("Build to only be called from the root builder");
+    });
+
+    it("should by default escape in text content", () => {
+        const builder = createBuilder();
+        const ssml = builder.sayAsUnit(`<>&'"`).build();
+        expect(ssml).toEqual(`<speak><say-as interpret-as="unit">&lt;&gt;&amp;&apos;&quot;</say-as></speak>`)
+    });
+
+    it("should not escape text content when told not to do so", () => {
+        const builder = createBuilder(false);
+        const ssml = builder.sayAsUnit(`<>&'"`).build();
+        expect(ssml).toEqual(`<speak><say-as interpret-as="unit"><>&'"</say-as></speak>`)
+    });
+
+    it("should by default escape attribute values", () => {
+        const builder = createBuilder();
+        const ssml = builder.sub(`<>&'"`,"isaliased").build();
+        expect(ssml).toEqual(`<speak><sub alias="&lt;&gt;&amp;&apos;&quot;">isaliased</sub></speak>`)
+    });
+
+    it("should not escape attributes when requested not to do so", () => {
+        const builder = createBuilder(false);
+        const ssml = builder.sub(`<>&'`,"isaliased").build();
+        expect(ssml).toEqual(`<speak><sub alias="<>&'">isaliased</sub></speak>`)
     })
 })
