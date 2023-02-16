@@ -5,6 +5,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "test":"jest",
+    "test-coverage":"jest --collectCoverage",
     "build": "npx tsc",
     "soundbank": "npx ts-node scripts/soundbank.ts",
     "speechcons": "npx ts-node scripts/speechcons.ts",

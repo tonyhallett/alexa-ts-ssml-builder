@@ -31,8 +31,8 @@ describe("builder", () =>{
 
     it("should work with break time", () =>{
         const builder = createBuilder();
-        const ssml = builder.break("medium").build();
-        expect(ssml).toEqual(`<speak><break strength="medium"/></speak>`)
+        const ssml = builder.break(1000).build();
+        expect(ssml).toEqual(`<speak><break time="1000ms"/></speak>`)
     });
 
     it("should work with default break (medium)", () =>{
