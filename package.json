@@ -4,6 +4,7 @@
   "description": "Typescript ssml builder for alexa ssml",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files":["dist"],
   "scripts": {
     "test":"jest",
     "test-coverage":"jest --collectCoverage",
