@@ -43,7 +43,8 @@ jpBuilder.paragraph(paragraphBuilder => paragraphBuilder.sentence("A sentence in
 
 The available methods are typescript picked from the `SSMLBuilder` interface below.
 
-Do not concern yourself with the generics.  These are used for picking the methods that are available on the root builder and the builders in the callbacks.
+Do not concern yourself with the generics.  These are used for picking the methods that are available on the root builder and the builders in the callbacks.  For instance the builder 
+for a paragraph will not have the method for paragraph.  The methods available are also determined by the ascendants, in accordance with the [Incompatible tags.](https://developer.amazon.com/en-US/docs/alexa/custom-skills/speech-synthesis-markup-language-ssml-reference.html#incompatible-tags) section of the Alexa SSML documentation.  Each builder returns itself.
 
 Additional helper methods.
 
@@ -184,7 +185,7 @@ export interface SSMLBuilder<
     >
   ): TReturn;
 
-  break(strength?: BreakStrength, milliseconds?: number): TReturn;
+  break(strengthOrMs?: BreakStrength | number): TReturn;
   paragraph(
     textOrCallback: TextOrBuilderCallback<
       ParagraphBuilderMethods,
@@ -240,7 +241,6 @@ export interface SSMLBuilder<
     >
   ): TReturn;
 
-  // percentage minimum is 20%
   prosodyRate(
     rate: ProsodyRate,
     textOrCallback: TextOrBuilderCallback<
@@ -251,7 +251,6 @@ export interface SSMLBuilder<
       TRestrictions
     >
   ): TReturn;
-  // db - The maximum positive value is about +4.08dB.
   prosodyVolume(
     volume: ProsodyVolume,
     textOrCallback: TextOrBuilderCallback<
@@ -273,7 +272,6 @@ export interface SSMLBuilder<
       TRestrictions
     >
   ): TReturn;
-  // max +50%, smallest -33.3 ( no exception just capped)
   prosodyPitch(
     pitch: ProsodyPitch,
     textOrCallback: TextOrBuilderCallback<
@@ -287,6 +285,17 @@ export interface SSMLBuilder<
   prosodyPitchAndRate(
     pitch: ProsodyPitch,
     rate: ProsodyRate,
+    textOrCallback: TextOrBuilderCallback<
+      ProsodyPitchBuilderMethods,
+      TSkillLocale,
+      TVoice,
+      TLang,
+      AddRestriction<TRestrictions, "prosodyPitch">
+    >
+  ): TReturn;
+  prosodyPitchAndVolume(
+    pitch: ProsodyPitch,
+    volume: ProsodyVolume,
     textOrCallback: TextOrBuilderCallback<
       ProsodyPitchBuilderMethods,
       TSkillLocale,
@@ -310,12 +319,14 @@ export interface SSMLBuilder<
 
   phonemeIPA(phonetic: string, text?: string): TReturn;
   phonemeXSampa(phonetic: string, text?: string): TReturn;
-  phonemeAnyLanguageIPA(...phonemes: IpaPhonemes[]): TReturn;
-  phonemeAnyLanguageXSampa(...phonemes: XSampaPhonemes[]): TReturn;
+  phonemeAnyLanguageIPA(text:string,...phonemes: IpaPhonemes[]): TReturn;
+  phonemeAnyLanguageXSampa(text:string,...phonemes: XSampaPhonemes[]): TReturn;
   phonemeLanguageIPA(
+    text:string,
     ...phonemes: IpaLangPhoneme<TSkillLocale, TVoice, TLang>[]
   ): TReturn;
   phonemeLanguageXSampa(
+    text:string,
     ...phonemes: XSampaLangPhoneme<TSkillLocale, TVoice, TLang>[]
   ): TReturn;
 
@@ -329,9 +340,7 @@ export interface SSMLBuilder<
   sayAsOrdinal(text: string): TReturn;
   sayAsCardinal(text: string): TReturn;
   sayAsCharacters(text: string): TReturn;
-
   sayAsDate(text: string, format: SayAsDateFormat): TReturn;
-
   sayAsInterjection<
     TSpeechcon extends LanguageSpeechcon<TSkillLocale, TVoice, TLang>
   >(
@@ -340,7 +349,6 @@ export interface SSMLBuilder<
   ): TReturn;
 }
 export type AllBuilderMethods = keyof SSMLBuilder<"en-GB">;
-
 ```
 
 # Incompatible tags
@@ -370,6 +378,12 @@ For tags that can be for defined skill locales or voices - conversational and ne
 
 These tags will be allowed for supported locales and supported voices and disallowed for unsupported locales and unsupported voices.
 
+Note that I believe that the documentation is not up to date.
+
+I have added Amy, Takumi and Lupe to the conversational voices.
+I have added Amy to the news voices.
+I have added en-GB and es-ES to long-form.
+
 ```
 jaJpBuilder.fun
 
@@ -396,4 +410,10 @@ Note that although it is valid SSML to switch to a supported voice inside an ama
 Although the docs state that they cannot be used together some of them do work, but for now the typescript adheres to these rules.
 
 
+# Todo
 
+In addition to the incompatible tags just mentioned.
+
+Add validation.
+
+Add a boolean generic to opt out of the voices and locales that I added to those that work with domains.
